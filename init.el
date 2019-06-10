@@ -14,6 +14,7 @@
 ;; --------------------------------------------------------------------------------
 ;; Recent changes:
 ;; - Change: ibuffer from opening in other window to open in current window.
+
 ;; - Reason: The reason for this was it just feels more like what emacs would logically do.
 
 ;; Remove the start screen and basic emacs settings
@@ -25,6 +26,10 @@
 (line-number-mode 1)
 (column-number-mode 1)
 (global-display-line-numbers-mode 1)
+;; Debating if I should add time I think I would need a better for it but I like the current bar.
+;; (setq display-time-24hr-format t)
+;; (setq display-time-format "%H:%M - %d %B %Y")
+;; (setq display-time-mode 1)
 ;; Allow buffer listing and matching in the minibuffer when using e.g. C-x b
 (setq indo-enable-flex-matching t)
 (setq ido-everywhere t)
@@ -74,6 +79,17 @@
 
 ;; ***** PACKAGES BELOW *****
 
+;; Adding vertical ido just easier to look at a vertical list than a horizontal one
+(use-package ido-vertical-mode
+  :ensure t)
+(ido-vertical-mode 1)
+
+;; Adding dmenu to easier see launchable applications in Exwm
+(use-package dmenu
+  :ensure t
+  :bind
+    ("s-d" . 'dmenu))
+
 ;; Adding a shell emulator this really isn't a package
 ;; so I will probably move it somewhere else in the furture.
 (defvar bash-shell "/bin/bash")
@@ -96,6 +112,15 @@
   :config
   (require 'exwm-config)
   (exwm-config-default)
+  (exwm-config-ido)
+  (dotimes (i 10)
+      (exwm-input-set-key (kbd (format "s-%d" i))
+                          `(lambda ()
+                             (interactive)
+                             (exwm-workspace-switch-create ,i))))
+  ;; I tried to set up the media key for this but could not figure it out
+  ;; if anyone figues out let me know I also tried another package called desktop enviroment
+  ;; it worked better but again not fully.
   (dolist (k '(XF86AudioLowerVolume
                XF86AudioRaiseVolume
                XF86PowerOff
@@ -118,16 +143,14 @@
 (require 'exwm-systemtray)
 (exwm-systemtray-enable)
 ;; Configure deleting workspaces and swapping in case of mistake
-(exwm-input-set-key (kbd "s-r") 'exwm-reset)
-(global-key-binding (kbd "s-k") 'exwm-workspace-delete)
-(global-key-binding (kbd "s-w") 'exwm-workspace-swap)
+(exwm-input-set-key (kbd "s-r") 'exwm-input-toggle-keyboard)
+(exwm-input-set-key (kbd "s-k") 'exwm-workspace-delete)
+(exwm-input-set-key (kbd "s-w") 'exwm-workspace-swap)
 ;; Adding locking to to the screen for when in exwm using slock
 (defun exwm-slock ()
   (interactive)
   (start-process "slock" nil "slock"))
 (exwm-input-set-key (kbd "s-l") 'exwm-slock)
-;; Allowing for Fn keys
-
 
 ;; Adding a color theme that keeps things simple and organizes the color scheme
 (use-package habamax-theme
@@ -230,5 +253,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (which-key use-package try switch-window s org-bullets dashboard dash counsel company beacon avy))))
-
+    (desktop-environment desktop-enviroment fancy-battery ido-vertical-mode dmenu which-key use-package try switch-window s org-bullets dashboard dash counsel company beacon avy))))
