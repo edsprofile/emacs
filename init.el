@@ -79,6 +79,15 @@
 
 ;; ***** PACKAGES BELOW *****
 
+;; Adding use-ttf to keep font consistent on different machines
+(use-package use-ttf
+  :ensure t)
+(setq use-tff-default-ttf-font-name "Ubuntu mono")
+
+;; Adding sudo edit for editing in sudo
+(use-package sudo-edit
+  :ensure t)
+
 ;; Adding vertical ido just easier to look at a vertical list than a horizontal one
 (use-package ido-vertical-mode
   :ensure t)
@@ -96,7 +105,7 @@
 (defadvice ansi-term (before force-bash)
   (interactive (list bash-shell)))
 (ad-activate 'ansi-term)
-(global-set-key (kbd "s-t") 'ansi-term)
+(global-set-key (kbd "s-e") 'ansi-term)
 
 ;; Adding popup-kill-ring to show the kill ring
 (use-package popup-kill-ring
@@ -176,12 +185,13 @@
   (add-hook 'after-init-hook 'global-company-mode))
 
 ;; Adding avy this allows for jumping around to characters
-;; only on the current screen just press "s-c"
+;; only on the current screen just press "M-S"
 ;; then enter the letter you would like to go to.
+;; recent change just M-s easier to press
 (use-package avy
   :ensure t
   :bind
-  ("s-c" . avy-goto-char))
+  ("M-s" . avy-goto-char))
 
 ;; Adding ivy, swiper and counsel
 ;; Adding counsel will bring in ivy and swiper
@@ -227,9 +237,6 @@
   :config
   (beacon-mode 1))
 
-
-
-
 ;;|------------------------------------------------------------------------------|
 ;;|                                                                              |
 ;;|                          Extra added variables                               |
@@ -242,7 +249,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 128 :width normal :foundry "SRC" :family "Hack")))))
+ '(default ((t (:inherit nil :stipple nil :background "#ffffff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 128 :width normal :foundry "DAMA" :family "Ubuntu mono")))))
 
 
 ;; Custom variables
@@ -253,4 +260,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (desktop-environment desktop-enviroment fancy-battery ido-vertical-mode dmenu which-key use-package try switch-window s org-bullets dashboard dash counsel company beacon avy))))
+    (better-shell use-ttf desktop-environment desktop-enviroment fancy-battery ido-vertical-mode dmenu which-key use-package try switch-window s org-bullets dashboard dash counsel company beacon avy))))
