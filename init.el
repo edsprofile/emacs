@@ -34,7 +34,10 @@
 (global-display-line-numbers-mode 1)
 ;; display time standard AM/PM
 (display-time-mode 1)
-
+;; Remove tabs
+(setq indent-tabs-mode nil)
+;;set line to always be on the screen
+(setq visual-line-mode t)
 ;; ***** BUFFER *****
 
 ;; Setting C-x k to kill the current buffer when pressed
@@ -45,7 +48,7 @@
 ;; Setting the key to kill the buffer
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 ;; Setting ibuffer to be the default buffer and opens in other window
-(defalias 'list-buffers 'ibuffer)
+;;(defalias 'list-buffers 'ibuffer)
 
 ;; ***** CUSTOM FUNCTIONS *****
 
@@ -122,7 +125,12 @@
       (exwm-input-set-key (kbd (format "s-%d" i))
                           `(lambda ()
                              (interactive)
-                             (exwm-workspace-switch-create ,i)))))
+                             (exwm-workspace-switch-create ,i))))
+
+  (dolist (k '(XF86AudioLowerVolume
+               XF86AudioRaiseVolume))
+    (cl-pushnew k exwm-input-prefix-keys))
+  (exwm-enable))
 ;; This enables the system tray for EXWM so is in included here
 (require 'exwm-systemtray)
 (exwm-systemtray-enable)
@@ -135,6 +143,19 @@
   (interactive)
   (start-process "slock" nil "slock"))
 (exwm-input-set-key (kbd "s-l") 'exwm-slock)
+
+;; Adding laptop functionality for exwm
+(defconst volumeModifier "4")
+(defun audio/raise-volume ()
+  (interactive)
+  (start-process "raise-volume" nil "pulsemixer" "--change-volume" (concat "+" volumeModifier)))
+
+(defun audio/lower-volume ()
+  (interactive)
+  (start-process "lower-volume" nil "pulsemixer" "--change-volume" (concat "-" volumeModifier)))
+
+(global-set-key (kbd "<XF86AudioRaiseVolume>") 'audio/raise-volume)
+(global-set-key (kbd "<XF86AudioLowerVolume>") 'audio/lower-volume)
 
 ;; Adding a color theme that keeps things simple and organizes the color scheme
 (use-package habamax-theme
