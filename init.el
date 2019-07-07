@@ -1,6 +1,6 @@
 ;; Edwin's init.el
 ;; start date: 6/08/2019
-;; last modified: 6/16/2019
+;; last modified: 10/04/2019
 ;; My personal init.el to learn more about emacs.
 ;; --------------------------------------------------------------------------------
 ;; My approach to writting this file: any new features should be under the super key
@@ -16,15 +16,20 @@
 ;; - Change: ibuffer from opening in other window to open in current window.
 ;; - Change: removed using ansi-term and other stuff I want to make thing simpler again.
 ;; - Change: Removed all code that was commented out.
+;;***** BASIC SETTING CHANGES *****
 
+;; Continous PDF
+(setq doc-view-continuous t)
+;; Show fringes
+(setq visual-line-fringe-indicators t)
 ;; Remove the start screen and basic emacs settings
 (setq inhibit-startup-message t)
 ;; Instead of an annoying sound a visual action is better I feel
 (setq visible-bell t)
 ;; Remove tool bar less clutter
 (tool-bar-mode -1)
-;; Remove menu bar
-(menu-bar-mode -1)
+;; keep menu bar
+(menu-bar-mode 1)
 ;; Remove the scroll bar
 (scroll-bar-mode -1)
 ;; Add line number and column numbers to be displayed on emacs bar
@@ -34,10 +39,29 @@
 (global-display-line-numbers-mode 1)
 ;; display time standard AM/PM
 (display-time-mode 1)
-;; Remove tabs
-(setq indent-tabs-mode nil)
-;;set line to always be on the screen
-(setq visual-line-mode t)
+;;set line to always be on the screen so words sick together
+(global-visual-line-mode 1)
+(setq octave-indent-comment nil)
+;; electric pair mode to add delimiters as they popup
+(electric-pair-mode 1)
+(show-paren-mode 1)
+(setq show-paren-style 'mixed)
+;; change color of numix highlighting original setting gtk_selection_bg_color, gtk_selection_fg_color
+(set-face-attribute 'region nil :background "#cae1ff")
+;; change electric indent behavior
+(setq-default electric-indent-inhibit t)
+;; set tabs to true to work with smart tabs for sure
+(setq indent-tabs-mode t)
+;; tab width default
+(setq tab-width 4)
+;; change deleting tabs by making it remove the whole tab
+(setq backward-delete-char-untabify-method 'hungry)
+;; spotting trailing spaces
+(setq whitespace-style '(face tabs tab-mark trailing))
+(setq whitespace-display-mappings
+      '((tab-mark 9 [124 9] [92 9]))) ; 124 is the ascii ID for '\|'
+(global-whitespace-mode)
+
 ;; ***** BUFFER *****
 
 ;; Setting C-x k to kill the current buffer when pressed
@@ -68,6 +92,15 @@
   (other-window 1))
 (global-set-key (kbd "C-x 3") 'split-follow-vertical)
 
+;; Copy the file path to kill
+(defun copy-file-path-to-kill ()
+  (interactive)
+  (insert (eval-expression 'buffer-file-name))
+  (move-beginning-of-line 1)
+  (kill-line 1)
+  (open-line 1))
+(global-set-key (kbd "C-c n") 'copy-file-path-to-kill)
+
 ;; ***** SETTING UP MELPA and checking PACKAGES *****
 
 ;; Setting up MELPA
@@ -75,6 +108,8 @@
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives
+	     '("gnu" . "https://elpa.gnu.org/packages/"))
 (package-initialize)
 
 ;; For making sure packages are installed
@@ -84,27 +119,48 @@
 
 ;; ***** PACKAGES BELOW *****
 
-;; Adding a powerline for better emacs bar
+;; magit for git interaction
+(use-package magit
+  :ensure t)
+(global-set-key (kbd "C-x g") 'magit-status)
+
+(use-package smart-tabs-mode
+  :ensure t)
+(smart-tabs-insinuate 'c 'c++ 'java 'javascript 'python 'nxml)
+
+;; Adding web mode for web development
+(use-package web-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode)))
+
+(defun my-web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-enable-auto-quoting nil))
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+
+
+;; Adding emmet mode for completion
+(use-package emmet-mode
+  :ensure t)
+(add-hook 'sgml-mode-hook 'emmet-mode)
+(add-hook 'css-mode-hook 'emmet-mode)
+(add-hook 'web-mode-hook 'emmet-mode)
+(setq emmet-self-closing-tag-style " /")
+
+;; Adding a powerline for a better emacs bar
 (use-package powerline
   :ensure t)
 (powerline-default-theme)
 
-;; Adding use-ttf to keep font consistent on different machines
-;; Currently I have a need for this but may get removed once
-;; I do not have to switch machinces so often.
-(use-package use-ttf
-  :ensure t)
-(setq use-tff-default-ttf-font-name "Ubuntu mono")
-
 ;; Adding sudo edit for editing in sudo
 (use-package sudo-edit
   :ensure t)
-
-;; Adding dmenu to easier see launchable applications
-(use-package dmenu
-  :ensure t
-  :bind
-    ("s-d" . 'dmenu))
 
 ;; Adding popup-kill-ring to show the kill ring
 (use-package popup-kill-ring
@@ -114,7 +170,7 @@
 
 ;; ***** EXWM *****
 
-;; Adding EXWM an emacs windows manager for those long work days
+;; Adding EXWM an emacs windows manager
 ;; for this to work you need the proper file e.g. /usr/share/xsessions/emacs.desktop
 ;; EXWM may need to get its own section
 (use-package exwm
@@ -122,18 +178,18 @@
   :config
   (require 'exwm-config)
   (dotimes (i 10)
-      (exwm-input-set-key (kbd (format "s-%d" i))
-                          `(lambda ()
-                             (interactive)
-                             (exwm-workspace-switch-create ,i))))
-
+    (exwm-input-set-key (kbd (format "s-%d" i))
+			`(lambda ()
+			   (interactive)
+			   (exwm-workspace-switch-create ,i))))
   (dolist (k '(XF86AudioLowerVolume
-               XF86AudioRaiseVolume))
+	       XF86AudioRaiseVolume))
     (cl-pushnew k exwm-input-prefix-keys))
   (exwm-enable))
 ;; This enables the system tray for EXWM so is in included here
 (require 'exwm-systemtray)
 (exwm-systemtray-enable)
+(setq exwm-systemtray-height 40)
 ;; Configure deleting workspaces and swapping in case of mistake
 (exwm-input-set-key (kbd "s-r") 'exwm-input-toggle-keyboard)
 (exwm-input-set-key (kbd "s-k") 'exwm-workspace-delete)
@@ -157,28 +213,31 @@
 (global-set-key (kbd "<XF86AudioRaiseVolume>") 'audio/raise-volume)
 (global-set-key (kbd "<XF86AudioLowerVolume>") 'audio/lower-volume)
 
+
+;; Adding dmenu to easier see launchable applications from exwm
+(use-package dmenu
+  :ensure t
+  :bind
+  ("s-d" . 'dmenu))
+
 ;; Adding a color theme that keeps things simple and organizes the color scheme
 (use-package habamax-theme
   :ensure t
   :config
-  (setq habamax-theme-variable-heading-heights t)
   (load-theme 'habamax t))
+
+(use-package solarized-theme
+  :ensure t)
 
 ;; Adding dashboard to basically customize the startup screen
 (use-package dashboard
   :ensure t
   :config
   (dashboard-setup-startup-hook)
-  (setq dashboard-items '((recents . 5)))
+  (setq dashboard-items '((recents . 10)))
   (setq dashboard-banner-logo-title "Welcome to Emacs")
   (setq dashboard-startup-banner 'logo)
   (setq dashboard-set-footer nil))
-
-;; Adding auto-complete it will search through all buffer
-(use-package company
-  :ensure t
-  :init
-  (add-hook 'after-init-hook 'global-company-mode))
 
 ;; Adding avy this allows for jumping around to characters
 ;; only on the current screen just press "M-S"
@@ -207,7 +266,8 @@
 	helm-buffers-fuzzy-matching t
 	helm-recentq-fuzzy-match t
 	helm-semantic-fuzzy-match t
-	helm-imenu-fuzzy-match t))
+	helm-imenu-fuzzy-match t
+	helm-split-window-in-side-p t))
 (helm-mode 1)
 (helm-autoresize-mode 1)
 
@@ -231,40 +291,31 @@
   :ensure t
   :config (which-key-mode))
 
-;; Org mode Bullets changed the astrisks to fonts
-;; kind of distracting so I removed it for now but it is nice
-;; so I am debating with keeping it or not.
-;; (use-package org-bullets
-;;   :ensure t
-;;   :config
-;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
-
 ;; Adding Beacon which just shows cursor a little more disticly when switching windows
 (use-package beacon
   :ensure t
   :config
   (beacon-mode 1))
 
-;; linux kernel C programming settings
-(setq c-default-style "linux"
-      c-basic-offset 8)
+
 
 ;;|------------------------------------------------------------------------------|
-;;|                                                                              |
-;;|                          Extra added variables                               |
-;;|                                                                              |
+;;|										 |
+;;|			     Extra added variables				 |
+;;|										 |
 ;;|------------------------------------------------------------------------------|
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (beacon which-key try switch-window helm swiper avy company dashboard habamax-theme exwm xelb use-ttf use-package sudo-edit powerline popup-kill-ring dmenu))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:inherit nil :stipple nil :background "#fdf6e3" :foreground "#111111" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 136 :width normal :foundry "xos4" :family "Hack")))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes (quote (brutalist-custom)))
+ '(custom-safe-themes
+   (quote
+    ("2ae536e59f8dc4cb625b999d99832cab3806a9ba9764db57718d9ab7f7e4628e" default))))
