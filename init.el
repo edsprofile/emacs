@@ -134,6 +134,7 @@
 ;; This enables the system tray for EXWM so is in included here
 (require 'exwm-systemtray)
 (exwm-systemtray-enable)
+(setq exwm-systemtray-height 40)
 ;; Configure deleting workspaces and swapping in case of mistake
 (exwm-input-set-key (kbd "s-r") 'exwm-input-toggle-keyboard)
 (exwm-input-set-key (kbd "s-k") 'exwm-workspace-delete)
@@ -249,6 +250,10 @@
 (setq c-default-style "linux"
       c-basic-offset 8)
 
+;; For learning lisp I like to turn it on when I need help so it is not on by default.
+(use-package rainbow-delimiters
+  :ensure t)
+
 ;;|------------------------------------------------------------------------------|
 ;;|                                                                              |
 ;;|                          Extra added variables                               |
@@ -261,7 +266,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (beacon which-key try switch-window helm swiper avy company dashboard habamax-theme exwm xelb use-ttf use-package sudo-edit powerline popup-kill-ring dmenu))))
+    (rainbow-delimiters beacon which-key try switch-window helm swiper avy company dashboard habamax-theme exwm xelb use-ttf use-package sudo-edit powerline popup-kill-ring dmenu))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
