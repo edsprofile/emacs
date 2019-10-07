@@ -13,9 +13,6 @@
 ;; is still horizontal and I am not sure how I want to approach a fix on this.
 ;; --------------------------------------------------------------------------------
 ;; Recent changes:
-;; - Change: ibuffer from opening in other window to open in current window.
-;; - Change: removed using ansi-term and other stuff I want to make thing simpler again.
-;; - Change: Removed all code that was commented out.
 ;;***** BASIC SETTING CHANGES *****
 
 ;; Continous PDF
