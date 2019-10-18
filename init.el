@@ -159,64 +159,6 @@
 (use-package sudo-edit
   :ensure t)
 
-;; Adding popup-kill-ring to show the kill ring
-(use-package popup-kill-ring
-  :ensure t
-  :bind
-  ("M-y" . popup-kill-ring))
-
-;; ***** EXWM *****
-
-;; Adding EXWM an emacs windows manager
-;; for this to work you need the proper file e.g. /usr/share/xsessions/emacs.desktop
-;; EXWM may need to get its own section
-(use-package exwm
-  :ensure t
-  :config
-  (require 'exwm-config)
-  (dotimes (i 10)
-    (exwm-input-set-key (kbd (format "s-%d" i))
-			`(lambda ()
-			   (interactive)
-			   (exwm-workspace-switch-create ,i))))
-  (dolist (k '(XF86AudioLowerVolume
-	       XF86AudioRaiseVolume))
-    (cl-pushnew k exwm-input-prefix-keys))
-  (exwm-enable))
-;; This enables the system tray for EXWM so is in included here
-(require 'exwm-systemtray)
-(exwm-systemtray-enable)
-(setq exwm-systemtray-height 40)
-;; Configure deleting workspaces and swapping in case of mistake
-(exwm-input-set-key (kbd "s-r") 'exwm-input-toggle-keyboard)
-(exwm-input-set-key (kbd "s-k") 'exwm-workspace-delete)
-(exwm-input-set-key (kbd "s-w") 'exwm-workspace-swap)
-;; Adding locking to to the screen for when in exwm using slock
-(defun exwm-slock ()
-  (interactive)
-  (start-process "slock" nil "slock"))
-(exwm-input-set-key (kbd "s-l") 'exwm-slock)
-
-;; Adding laptop functionality for exwm
-(defconst volumeModifier "4")
-(defun audio/raise-volume ()
-  (interactive)
-  (start-process "raise-volume" nil "pulsemixer" "--change-volume" (concat "+" volumeModifier)))
-
-(defun audio/lower-volume ()
-  (interactive)
-  (start-process "lower-volume" nil "pulsemixer" "--change-volume" (concat "-" volumeModifier)))
-
-(global-set-key (kbd "<XF86AudioRaiseVolume>") 'audio/raise-volume)
-(global-set-key (kbd "<XF86AudioLowerVolume>") 'audio/lower-volume)
-
-
-;; Adding dmenu to easier see launchable applications from exwm
-(use-package dmenu
-  :ensure t
-  :bind
-  ("s-d" . 'dmenu))
-
 ;; Adding a color theme that keeps things simple and organizes the color scheme
 (use-package habamax-theme
   :ensure t
@@ -304,16 +246,19 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-'(default ((t (:inherit nil :stipple nil :background "#fdf6e3" :foreground "#111111" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 136 :width normal :foundry "xos4" :family "Hack")))))
+ '(default ((t (:inherit nil :stipple nil :background "#ffffff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "SRC" :family "hack")))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (brutalist-custom)))
+ '(custom-enabled-themes (quote (habamax-custom)))
  '(custom-safe-themes
    (quote
-    ("2ae536e59f8dc4cb625b999d99832cab3806a9ba9764db57718d9ab7f7e4628e" default))))
+    ("ade856d9263050e485bb594687315bb3b04a9accb938a6be1aca7e6fed3b5bd5" default)))
+ '(package-selected-packages
+   (quote
+    (which-key web-mode use-package try switch-window swiper sudo-edit smart-tabs-mode magit helm habamax-theme emmet-mode dashboard beacon avy))))
 ;; Edwin's init.el
 ;; start date: 6/08/2019
 ;; last modified: 10/04/2019
