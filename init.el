@@ -60,6 +60,8 @@
 (global-whitespace-mode)
 ;; load abbrevs
 (load "~/.emacs.d/lisp/my-abbrev.el")
+;; make bookmark save everytime it is changed
+(setq bookmark-save-flag 1)
 
 ;; ***** BUFFER *****
 
