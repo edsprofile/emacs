@@ -150,11 +150,6 @@
 (add-hook 'web-mode-hook 'emmet-mode)
 (setq emmet-self-closing-tag-style " /")
 
-;; Adding a powerline for a better emacs bar
-(use-package powerline
-  :ensure t)
-(powerline-default-theme)
-
 ;; Adding sudo edit for editing in sudo
 (use-package sudo-edit
   :ensure t)
@@ -164,9 +159,6 @@
   :ensure t
   :config
   (load-theme 'habamax t))
-
-(use-package solarized-theme
-  :ensure t)
 
 ;; Adding dashboard to basically customize the startup screen
 (use-package dashboard
@@ -419,12 +411,6 @@
 ;; Adding sudo edit for editing in sudo
 (use-package sudo-edit
   :ensure t)
-
-;; Adding dmenu to easier see launchable applications from exwm
-(use-package dmenu
-  :ensure t
-  :bind
-  ("s-d" . 'dmenu))
 
 ;; Adding a color theme that keeps things simple and organizes the color scheme
 (use-package habamax-theme
