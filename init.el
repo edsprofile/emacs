@@ -58,7 +58,7 @@
 (setq whitespace-display-mappings
       '((tab-mark 9 [124 9] [92 9]))) ; 124 is the ascii ID for '\|'
 (global-whitespace-mode)
-;; load abbrevs
+;; set the abbrev-file-name
 (setq abbrev-file-name "~/.emacs.d/lisp/my-abbrev.el")
 ;; set abbrevs to be global
 (setq-default abbrev-mode t)
