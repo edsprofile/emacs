@@ -59,7 +59,7 @@
       '((tab-mark 9 [124 9] [92 9]))) ; 124 is the ascii ID for '\|'
 (global-whitespace-mode)
 ;; load abbrevs
-(load "~/.emacs.d/lisp/my-abbrev.el")
+(setq abbrev-file-name "~/.emacs.d/lisp/my-abbrev.el")
 ;; set abbrevs to be global
 (setq-default abbrev-mode t)
 ;; make bookmark save everytime it is changed
