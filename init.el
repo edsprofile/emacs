@@ -1,6 +1,6 @@
 ;; Edwin's init.el
 ;; start date: 6/08/2019
-;; last modified: 10/04/2019
+;; last modified: 10/20/2019
 ;; My personal init.el to learn more about emacs.
 ;; --------------------------------------------------------------------------------
 ;; My approach to writting this file: any new features should be under the super key
@@ -64,6 +64,8 @@
 (setq-default abbrev-mode t)
 ;; make bookmark save everytime it is changed
 (setq bookmark-save-flag 1)
+;; make abbrevs save on exit
+(setq save-abbrevs 'silently)
 
 ;; ***** BUFFER *****
 
