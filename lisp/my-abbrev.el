@@ -115,6 +115,10 @@
 
 (define-abbrev-table 'vc-git-region-history-mode-abbrev-table '())
 
+;; My custom abbrevs appear after this
+;; You can copy this file but you just really need the init file
+;; and you can make your own abbrevs
+;;
 ;; template for creating abbrev-table
 ;; (define-abbrev-table 'xxxx-mode-abbrev-table
 ;;  '(("abbr"
