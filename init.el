@@ -94,7 +94,7 @@
   (balance-windows)
   (other-window 1))
 (global-set-key (kbd "C-x 3") 'split-follow-vertical)
-n
+
 ;; Copy the file path to kill
 (defun copy-file-path-to-kill ()
   (interactive)
