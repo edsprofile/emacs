@@ -1,11 +1,11 @@
 ;; Edwin's init.el
 ;; start date: 6/08/2019
-;; last modified: 10/20/2019
+;; last modified: 10/23/2019
 ;; My personal init.el to learn more about emacs.
 ;; --------------------------------------------------------------------------------
 ;; My approach to writting this file: any new features should be under the super key
 ;; and some other combination. Any function that are similiar will be replace for example
-;; since swiper is just a better search I replaced the default search key-binding "C-s" to now invoke swiper instead of incremental search.
+;; since helm-swoop is just a better search I replaced the default search key-binding "C-s" to now invoke helm-swoop instead of incremental search.
 ;; --------------------------------------------------------------------------------
 ;; Currently working/thinking on: I haven't put this file into an .org, but may consider in the furture.
 ;; I also want to group all setting that set keys together to be more logically grouped. Adding more comments
@@ -43,8 +43,6 @@
 (electric-pair-mode 1)
 (show-paren-mode 1)
 (setq show-paren-style 'mixed)
-;; change color of numix highlighting original setting gtk_selection_bg_color, gtk_selection_fg_color
-(set-face-attribute 'region nil :background "#cae1ff")
 ;; change electric indent behavior
 (setq-default electric-indent-inhibit t)
 ;; set tabs to true to work with smart tabs for sure
@@ -187,12 +185,7 @@
   :bind
   ("M-s" . avy-goto-char))
 
-;; Adding swiper
-(use-package swiper
-  :ensure t
-  :bind ("C-s" . 'swiper))
-
-;; trying out helm for a little while to see what I think
+;; Helm awesome package that helps searching for many things
 (use-package helm
   :ensure t
   :config
@@ -209,6 +202,10 @@
 	helm-split-window-in-side-p t))
 (helm-mode 1)
 (helm-autoresize-mode 1)
+
+(use-package helm-swoop
+  :ensure t)
+(global-set-key (kbd "C-s") 'helm-swoop)
 
 ;; Adding switch-window
 (use-package switch-window
@@ -237,7 +234,7 @@
   (beacon-mode 1))
 
 ;;|------------------------------------------------------------------------------|
-;;|										 |
-;;|			     Extra added variables				 |
-;;|										 |
+;;|                                                                              |
+;;|                            Extra added variables                             |
+;;|                                                                              |
 ;;|------------------------------------------------------------------------------|
