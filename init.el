@@ -207,6 +207,12 @@
   :ensure t)
 (global-set-key (kbd "C-s") 'helm-swoop)
 
+(use-package helm-projectile
+  :ensure t)
+(projectile-global-mode)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
+
 ;; Adding switch-window
 (use-package switch-window
   :ensure t
