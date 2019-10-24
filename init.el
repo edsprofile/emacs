@@ -207,6 +207,8 @@
   :ensure t)
 (global-set-key (kbd "C-s") 'helm-swoop)
 
+(use-package projectile
+  :ensure t)
 (use-package helm-projectile
   :ensure t)
 (projectile-global-mode)
