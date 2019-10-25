@@ -122,6 +122,11 @@
 
 ;; ***** PACKAGES BELOW *****
 
+(use-package slime
+  :ensure t)
+(setq inferior-lisp-program "/usr/bin/sbcl")
+(setq slime-contribs '(slime-fancy))
+
 ;; magit for git interaction
 (use-package magit
   :ensure t)
@@ -246,3 +251,17 @@
 ;;|                            Extra added variables                             |
 ;;|                                                                              |
 ;;|------------------------------------------------------------------------------|
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+	(slime helm-projectile which-key web-mode use-package try switch-window sudo-edit smart-tabs-mode projectile powerline magit helm-swoop habamax-theme emmet-mode dmenu dashboard beacon avy))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
