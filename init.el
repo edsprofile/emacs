@@ -44,18 +44,13 @@
 (show-paren-mode 1)
 (setq show-paren-style 'mixed)
 ;; change electric indent behavior
-(setq-default electric-indent-inhibit t)
-;; set tabs to true to work with smart tabs for sure
-(setq indent-tabs-mode t)
+(setq-default electric-indent-inhibit nil)
+;; allow emacs to insert tabs
+(setq-default indent-tabs-mode t)
 ;; tab width default
-(setq tab-width 4)
+(setq-default tab-width 4)
 ;; change deleting tabs by making it remove the whole tab
 (setq backward-delete-char-untabify-method 'hungry)
-;; spotting trailing spaces
-(setq whitespace-style '(face tabs tab-mark trailing))
-(setq whitespace-display-mappings
-      '((tab-mark 9 [124 9] [92 9]))) ; 124 is the ascii ID for '\|'
-(global-whitespace-mode)
 ;; set the abbrev-file-name
 (setq abbrev-file-name "~/.emacs.d/lisp/my-abbrev.el")
 ;; set abbrevs to be global
@@ -132,10 +127,6 @@
   :ensure t)
 (global-set-key (kbd "C-x g") 'magit-status)
 
-(use-package smart-tabs-mode
-  :ensure t)
-(smart-tabs-insinuate 'c 'c++ 'java 'javascript 'python 'nxml)
-
 ;; Adding web mode for web development
 (use-package web-mode
   :ensure t
@@ -146,10 +137,14 @@
 
 (defun my-web-mode-hook ()
   "Hooks for Web mode."
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-enable-auto-quoting nil))
+  (setq web-mode-enable-auto-quoting nil)
+  (setq web-mode-indent-style 4)
+  (web-mode-use-tabs)
+  (setq web-mode-markup-indent-offset 4)
+  (setq web-mode-css-indent-off 4)
+  (setq web-mode-code-indent-offset 4)
+  (setq web-mode-script-padding 0)
+  (setq web-mode-enable-css-colorization t))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
 
 
@@ -258,7 +253,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-	(slime helm-projectile which-key web-mode use-package try switch-window sudo-edit smart-tabs-mode projectile powerline magit helm-swoop habamax-theme emmet-mode dmenu dashboard beacon avy))))
+	(spacemacs-theme slime helm-projectile which-key use-package try switch-window sudo-edit projectile powerline magit helm-swoop habamax-theme emmet-mode dmenu dashboard beacon avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
