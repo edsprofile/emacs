@@ -1,6 +1,8 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'Buffer-menu-mode-abbrev-table '())
 
+(define-abbrev-table 'Custom-mode-abbrev-table '())
+
 (define-abbrev-table 'Info-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'bookmark-bmenu-mode-abbrev-table '())
@@ -31,11 +33,15 @@
 
 (define-abbrev-table 'epa-key-mode-abbrev-table '())
 
+(define-abbrev-table 'eshell-mode-abbrev-table '())
+
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
 
 (define-abbrev-table 'git-commit-elisp-text-mode-abbrev-table '())
 
 (define-abbrev-table 'global-abbrev-table '())
+
+(define-abbrev-table 'grep-mode-abbrev-table '())
 
 (define-abbrev-table 'helm-grep-mode-abbrev-table '())
 
@@ -44,6 +50,8 @@
 (define-abbrev-table 'helm-occur-mode-abbrev-table '())
 
 (define-abbrev-table 'help-mode-abbrev-table '())
+
+(define-abbrev-table 'ibuffer-mode-abbrev-table '())
 
 (define-abbrev-table 'ivy-occur-grep-mode-abbrev-table '())
 
@@ -91,17 +99,33 @@
 
 (define-abbrev-table 'occur-mode-abbrev-table '())
 
+(define-abbrev-table 'outline-mode-abbrev-table '())
+
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'prog-mode-abbrev-table '())
 
+(define-abbrev-table 'select-tags-table-mode-abbrev-table '())
+
 (define-abbrev-table 'shell-mode-abbrev-table '())
+
+(define-abbrev-table 'sldb-mode-abbrev-table '())
+
+(define-abbrev-table 'slime-connection-list-mode-abbrev-table '())
+
+(define-abbrev-table 'slime-inspector-mode-abbrev-table '())
+
+(define-abbrev-table 'slime-thread-control-mode-abbrev-table '())
+
+(define-abbrev-table 'slime-xref-mode-abbrev-table '())
 
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
+
+(define-abbrev-table 'term-mode-abbrev-table '())
 
 (define-abbrev-table 'text-mode-abbrev-table '())
 
@@ -115,27 +139,22 @@
 
 (define-abbrev-table 'vc-git-region-history-mode-abbrev-table '())
 
-;; My custom abbrevs appear after this
-;; You can copy this file but you just really need the init file
-;; and you can make your own abbrevs
-;;
-;; template for creating abbrev-table
-;; (define-abbrev-table 'xxxx-mode-abbrev-table
-;;  '(("abbr"
-;;     "text to expand for abbr" nil 0)
-;;    ("other"
-;;     "other text" nil 0)))
-
 (define-abbrev-table 'web-mode-abbrev-table
-  '(("ht"
-"<!DOCTYPE html>
+  '(
+    ("ht" "<!DOCTYPE html>
 <html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\">
 
   <head>
     <meta charset=\"UTF-8\" />
     <title>title</title>
+    <link href=\"\" rel=\"stylesheet\" type=\"text/css\" />
   </head>
 
   <body>
   </body>
-</html>" nil 0)))
+</html>" nil 0)
+    ("script" "<script type=\"\" src=\"\"></script>" nil 1)
+   ))
+
+(define-abbrev-table 'xref--xref-buffer-mode-abbrev-table '())
+

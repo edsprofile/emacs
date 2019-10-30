@@ -136,14 +136,14 @@
   (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode)))
 
 (defun my-web-mode-hook ()
-  "Hooks for Web mode."
+  "Hook for Web mode."
   (setq web-mode-enable-auto-quoting nil)
   (setq web-mode-indent-style 4)
   (web-mode-use-tabs)
   (setq web-mode-markup-indent-offset 4)
   (setq web-mode-css-indent-off 4)
   (setq web-mode-code-indent-offset 4)
-  (setq web-mode-script-padding 0)
+  (setq web-mode-script-padding 4)
   (setq web-mode-enable-css-colorization t))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
 
