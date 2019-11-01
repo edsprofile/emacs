@@ -5,7 +5,7 @@
 ;; --------------------------------------------------------------------------------
 ;; My approach to writting this file: any new features should be under the super key
 ;; and some other combination. Any function that are similiar will be replace for example
-;; since helm-swoop is just a better search I replaced the default search key-binding "C-s" to now invoke helm-swoop instead of incremental search.
+;; helm just has about everything and I just discoverd it has helm-occur which makes helm swoop redundant.
 ;; --------------------------------------------------------------------------------
 ;; Currently working/thinking on: I haven't put this file into an .org, but may consider in the furture.
 ;; I also want to group all setting that set keys together to be more logically grouped. Adding more comments
@@ -105,6 +105,17 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; ***** SPELLING HOOKS *****
+(defun turn-on-flyspell()
+  (flyspell-mode 1))
+
+(add-hook 'text-mode-hook 'turn-on-flyspell())
+
+(defun turn-on-flyspell-prog-mode()
+  (flyspell-prog-mode))
+
+(add-hook 'prog-mode-hook 'turn-on-flyspell-prog-mode())
+
 ;; ***** PACKAGES BELOW *****
 
 ;; slime for lisp
@@ -179,20 +190,14 @@
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-s") 'helm-occur)
   (setq helm-autoresize-max-height 0
 	helm-autoresize-min-height 40
-	helm-M-x-fuzzy-match t
-	helm-buffers-fuzzy-matching t
-	helm-recentq-fuzzy-match t
-	helm-semantic-fuzzy-match t
-	helm-imenu-fuzzy-match t
 	helm-split-window-in-side-p t))
+(require 'helm-config)
 (helm-mode 1)
 (helm-autoresize-mode 1)
-
-(use-package helm-swoop
-  :ensure t)
-(global-set-key (kbd "C-s") 'helm-swoop)
 
 (use-package projectile
   :ensure t)
@@ -240,7 +245,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-	(spacemacs-theme slime helm-projectile which-key use-package try switch-window sudo-edit projectile powerline magit helm-swoop habamax-theme emmet-mode dmenu dashboard beacon avy))))
+    (spacemacs-theme slime helm-projectile which-key use-package try switch-window sudo-edit projectile powerline magit habamax-theme emmet-mode dmenu dashboard beacon avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
