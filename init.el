@@ -1,6 +1,6 @@
 ;; Edwin's init.el
 ;; start date: 6/08/2019
-;; last modified: 10/23/2019
+;; last modified: 10/31/2019
 ;; My personal init.el to learn more about emacs.
 ;; --------------------------------------------------------------------------------
 ;; My approach to writting this file: any new features should be under the super key
@@ -25,8 +25,6 @@
 (setq visible-bell t)
 ;; Remove tool bar less clutter
 (tool-bar-mode -1)
-;; keep menu bar
-(menu-bar-mode 1)
 ;; Remove the scroll bar
 (scroll-bar-mode -1)
 ;; Add line number and column numbers to be displayed on emacs bar
@@ -37,19 +35,12 @@
 ;; display time standard AM/PM
 (display-time-mode 1)
 ;;set line to always be on the screen so words sick together
-(global-visual-line-mode 1)
-(setq octave-indent-comment nil)
+(global-visual-line-mode -1)
 ;; electric pair mode to add delimiters as they popup
 (electric-pair-mode 1)
 (show-paren-mode 1)
 (setq show-paren-style 'mixed)
-;; change electric indent behavior
-(setq-default electric-indent-inhibit nil)
-;; allow emacs to insert tabs
-(setq-default indent-tabs-mode t)
-;; tab width default
-(setq-default tab-width 4)
-;; change deleting tabs by making it remove the whole tab
+;; delete whole tab when backspacing
 (setq backward-delete-char-untabify-method 'hungry)
 ;; set the abbrev-file-name
 (setq abbrev-file-name "~/.emacs.d/lisp/my-abbrev.el")
@@ -69,8 +60,7 @@
   (kill-buffer (current-buffer)))
 ;; Setting the key to kill the buffer
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
-;; Setting ibuffer to be the default buffer and opens in other window
-;;(defalias 'list-buffers 'ibuffer)
+
 
 ;; ***** CUSTOM FUNCTIONS *****
 
@@ -117,6 +107,7 @@
 
 ;; ***** PACKAGES BELOW *****
 
+;; slime for lisp
 (use-package slime
   :ensure t)
 (setq inferior-lisp-program "/usr/bin/sbcl")
@@ -133,20 +124,16 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode)))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode)))
 
 (defun my-web-mode-hook ()
   "Hook for Web mode."
   (setq web-mode-enable-auto-quoting nil)
-  (setq web-mode-indent-style 4)
+  (setq web-mode-enable-css-colorization t)
   (web-mode-use-tabs)
-  (setq web-mode-markup-indent-offset 4)
-  (setq web-mode-css-indent-off 4)
-  (setq web-mode-code-indent-offset 4)
-  (setq web-mode-script-padding 4)
-  (setq web-mode-enable-css-colorization t))
+  (setq truncate-lines t))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
-
 
 ;; Adding emmet mode for completion
 (use-package emmet-mode
