@@ -109,12 +109,34 @@
 (defun turn-on-flyspell()
   (flyspell-mode 1))
 
-(add-hook 'text-mode-hook 'turn-on-flyspell())
+(add-hook 'text-mode-hook 'turn-on-flyspell)
 
 (defun turn-on-flyspell-prog-mode()
   (flyspell-prog-mode))
 
-(add-hook 'prog-mode-hook 'turn-on-flyspell-prog-mode())
+(defun web-mode-flyspefll-verify ()
+  (let ((f (get-text-property (- (point) 1) 'face)))
+    (not (memq f '(web-mode-html-attr-value-face
+                   web-mode-html-tag-face
+                   web-mode-html-attr-name-face
+                   web-mode-doctype-face
+                   web-mode-keyword-face
+                   web-mode-function-name-face
+                   web-mode-variable-name-face
+                   web-mode-css-property-name-face
+                   web-mode-css-selector-face
+                   web-mode-css-color-face
+                   web-mode-type-face
+                   )
+               ))))
+(put 'web-mode 'flyspell-mode-predicate 'web-mode-flyspefll-verify)
+
+(add-hook 'web-mode-hook
+          (lambda ()
+            (flyspell-mode 1)
+            ))
+
+(add-hook 'prog-mode-hook 'turn-on-flyspell-prog-mode)
 
 ;; ***** PACKAGES BELOW *****
 
@@ -199,6 +221,11 @@
 (helm-mode 1)
 (helm-autoresize-mode 1)
 
+;; to display function, variable and dependency tags when searching through c files
+(with-eval-after-load 'helm-semantic
+      (push '(c-mode . semantic-format-tag-summarize) helm-semantic-display-style)
+      (push '(c++-mode . semantic-format-tag-summarize) helm-semantic-display-style))
+
 (use-package projectile
   :ensure t)
 (use-package helm-projectile
@@ -206,6 +233,11 @@
 (projectile-global-mode)
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)
+
+(use-package flyspell-correct-helm
+  :bind ("C-;" . flyspell-correct-wrapper)
+  :init
+  (setq flyspell-correct-interface #'flyspell-correct-helm))
 
 ;; Adding switch-window
 (use-package switch-window
@@ -245,7 +277,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (spacemacs-theme slime helm-projectile which-key use-package try switch-window sudo-edit projectile powerline magit habamax-theme emmet-mode dmenu dashboard beacon avy))))
+    (flyspell-correct-helm spacemacs-theme slime helm-projectile which-key use-package try switch-window sudo-edit projectile powerline magit habamax-theme emmet-mode dmenu dashboard beacon avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
