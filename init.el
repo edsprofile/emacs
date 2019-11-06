@@ -40,8 +40,6 @@
 (electric-pair-mode 1)
 (show-paren-mode 1)
 (setq show-paren-style 'mixed)
-;; delete whole tab when backspacing
-(setq backward-delete-char-untabify-method 'hungry)
 ;; set the abbrev-file-name
 (setq abbrev-file-name "~/.emacs.d/lisp/my-abbrev.el")
 ;; set abbrevs to be global
@@ -50,6 +48,9 @@
 (setq bookmark-save-flag 1)
 ;; make abbrevs save on exit
 (setq save-abbrevs 'silently)
+;; auto fill for text files
+(add-hook 'text-mode-hook 'auto-fill-mode)
+(setq-default fill-column 80)
 
 ;; ***** BUFFER *****
 
@@ -105,7 +106,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; ***** SPELLING HOOKS *****
+;; ***** SPELLING HOOKS and SPELLING STUFF*****
 (defun turn-on-flyspell()
   (flyspell-mode 1))
 
@@ -114,29 +115,15 @@
 (defun turn-on-flyspell-prog-mode()
   (flyspell-prog-mode))
 
-(defun web-mode-flyspefll-verify ()
-  (let ((f (get-text-property (- (point) 1) 'face)))
-    (not (memq f '(web-mode-html-attr-value-face
-                   web-mode-html-tag-face
-                   web-mode-html-attr-name-face
-                   web-mode-doctype-face
-                   web-mode-keyword-face
-                   web-mode-function-name-face
-                   web-mode-variable-name-face
-                   web-mode-css-property-name-face
-                   web-mode-css-selector-face
-                   web-mode-css-color-face
-                   web-mode-type-face
-                   )
-               ))))
-(put 'web-mode 'flyspell-mode-predicate 'web-mode-flyspefll-verify)
-
-(add-hook 'web-mode-hook
-          (lambda ()
-            (flyspell-mode 1)
-            ))
-
 (add-hook 'prog-mode-hook 'turn-on-flyspell-prog-mode)
+
+(use-package langtool
+  :ensure t)
+(setq langtool-language-tool-jar "/opt/LanguageTool-4.7/languagetool-commandline.jar"
+      langtool-disabled-rules '("WHITESPACE_RULE"
+                                "EN_UNPAIRED_BRACKETS"
+                                "COMMA_PARENTHESIS_WHITESPACE"
+                                "EN_QUOTES"))
 
 ;; ***** PACKAGES BELOW *****
 
@@ -164,7 +151,6 @@
   "Hook for Web mode."
   (setq web-mode-enable-auto-quoting nil)
   (setq web-mode-enable-css-colorization t)
-  (web-mode-use-tabs)
   (setq truncate-lines t))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
 
@@ -184,6 +170,7 @@
 (use-package habamax-theme
   :ensure t
   :config
+  (setq habamax-theme-variable-heading-heights t)
   (load-theme 'habamax t))
 
 ;; Adding dashboard to basically customize the startup screen
@@ -235,9 +222,9 @@
 (helm-projectile-on)
 
 (use-package flyspell-correct-helm
-  :bind ("C-;" . flyspell-correct-wrapper)
   :init
   (setq flyspell-correct-interface #'flyspell-correct-helm))
+(define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper)
 
 ;; Adding switch-window
 (use-package switch-window
