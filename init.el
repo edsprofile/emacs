@@ -54,6 +54,11 @@
 ;; change tabs to spaces
 (setq-default indent-tabs-mode nil)
 
+;; ***** ORG MODE *****
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((lisp . t)))
+
 ;; ***** BUFFER *****
 
 ;; Setting C-x k to kill the current buffer when pressed
@@ -200,11 +205,19 @@
   :ensure t)
 
 ;; Adding a color theme that keeps things simple and organizes the color scheme
-(use-package habamax-theme
+;; (use-package habamax-theme
+;;   :ensure t
+;;   :config
+;;   (setq habamax-theme-variable-heading-heights t)
+;;   (load-theme 'habamax t))
+
+;; trying out another color theme that is a little more supported and has both light and dark theme
+;; though I mainly use light themes
+(use-package solorized-theme
   :ensure t
   :config
-  (setq habamax-theme-variable-heading-heights t)
-  (load-theme 'habamax t))
+  (load-theme 'solorized-light t)
+  (setq solarized-high-contrast-mode-line t))
 
 ;; Adding dashboard to basically customize the startup screen
 (use-package dashboard
