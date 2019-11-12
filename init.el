@@ -213,11 +213,14 @@
 
 ;; trying out another color theme that is a little more supported and has both light and dark theme
 ;; though I mainly use light themes
-(use-package solorized-theme
+(use-package solarized-theme
   :ensure t
   :config
-  (load-theme 'solorized-light t)
-  (setq solarized-high-contrast-mode-line t))
+  (setq solarized-distinct-fringe-background t)
+  (setq solarized-high-contrast-mode-line t)
+  (load-theme 'solarized-light t)
+  (set-face-attribute 'mode-line nil :foreground "#fdf6e3":background "#74adf5" :box nil :underline nil :overline nil)
+  (set-face-attribute 'mode-line-inactive nil :background "#eee8d5":box nil :underline nil :overline nil))
 
 ;; Adding dashboard to basically customize the startup screen
 (use-package dashboard
@@ -310,7 +313,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (flyspell-correct-helm spacemacs-theme slime helm-projectile which-key use-package try switch-window sudo-edit projectile powerline magit habamax-theme emmet-mode dmenu dashboard beacon avy))))
+    (flyspell-correct-helm slime helm-projectile which-key use-package try switch-window sudo-edit projectile powerline magit habamax-theme emmet-mode dmenu dashboard beacon avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
