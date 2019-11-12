@@ -141,7 +141,8 @@
 
 (define-abbrev-table 'web-mode-abbrev-table
   '(
-    ("ht" "<!DOCTYPE html>
+    ("ht"
+"<!DOCTYPE html>
 <html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\">
 
   <head>
@@ -153,7 +154,7 @@
   <body>
   </body>
 </html>" nil 0)
-    ("script" "<script type=\"\" src=\"\"></script>" nil 1)
+    ("script" "<script type=\"\" src=\"\"></script>" nil 0)
    ))
 
 (define-abbrev-table 'xref--xref-buffer-mode-abbrev-table '())
