@@ -51,6 +51,14 @@
 (setq-default fill-column 80)
 ;; change tabs to spaces
 (setq-default indent-tabs-mode nil)
+;; Setting octave mode for .m files
+(add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+;; scroll one line at a time
+(setq scroll-step 1)
+;; do not recenter the cursor
+(setq scroll-conservatively 1000)
+;; auto pair mode globally matches delimiters
+(electric-pair-mode 1)
 
 ;; ***** ORG MODE *****
 (org-babel-do-load-languages
@@ -89,11 +97,8 @@
 ;; Copy the file path to kill
 (defun copy-file-path-to-kill ()
   (interactive)
-  (insert (eval-expression 'buffer-file-name))
-  (move-beginning-of-line 1)
-  (kill-line 1)
-  (open-line 1))
-(global-set-key (kbd "C-c n") 'copy-file-path-to-kill)
+  (kill-new (buffer-file-name)))
+(global-set-key (kbd "C-c C-n") 'copy-file-path-to-kill)
 
 ;; ***** SETTING UP MELPA and checking PACKAGES *****
 
@@ -118,8 +123,6 @@
 
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
 (use-package langtool
   :ensure t)
 (setq langtool-language-tool-jar "/opt/LanguageTool-4.7/languagetool-commandline.jar"
@@ -128,7 +131,53 @@
                                 "COMMA_PARENTHESIS_WHITESPACE"
                                 "EN_QUOTES"))
 
+;; ***** WEB DEVELOPMENT *****
+
+;; for html validation
+;; Function to run Tidy HTML parser on buffer
+;; NOTE: this requires external Tidy program
+;; tidy -f /tmp/tidy-errs -q -i -wrap 72 -c
+ (defun tidy-buffer ()
+  "Run Tidy HTML parser on current buffer."
+  (interactive)
+  (if (get-buffer "tidy-errs") (kill-buffer "tidy-errs"))
+  (shell-command (concat "tidy -f /tmp/tidy-errs -q -i -wrap " (buffer-file-name)))
+  (kill-buffer "*Shell Command Output*")
+  (find-file-other-window "/tmp/tidy-errs")
+  (other-window 1)
+  (delete-file "/tmp/tidy-errs")
+  (message "buffer tidy'ed"))
+(global-set-key (kbd "C-x t") 'tidy-buffer)
+
+;;Adding web mode for web development
+(use-package web-mode
+  :ensure t
+  :config
+  ;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode)
+  ;; (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode)))
+)
+(defun my-web-mode-hook ()
+  "Hook for Web mode."
+  (setq web-mode-enable-auto-quoting nil)
+  (setq web-mode-enable-css-colorization t)
+  (setq truncate-lines t)
+  (setq web-mode-enable-auto-indention nil))
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+
+;; Adding emmet mode for completion
+(use-package emmet-mode
+  :ensure t)
+(add-hook 'web-mode-hook 'emmet-mode)
+(setq emmet-self-closing-tag-style " /")
+
+
 ;; ***** PACKAGES BELOW *****
+
+;; restclient for web development
+(use-package restclient
+  :ensure t)
 
 ;; slime for lisp
 (use-package slime
@@ -144,56 +193,14 @@
   :ensure t)
 (global-set-key (kbd "C-x g") 'magit-status)
 
-;; Adding web mode for web development
-(use-package web-mode
-  :ensure t
-  :config
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode)))
-
-(defun my-web-mode-hook ()
-  "Hook for Web mode."
-  (setq web-mode-enable-auto-quoting nil)
-  (setq web-mode-enable-css-colorization t)
-  (setq truncate-lines t))
-(add-hook 'web-mode-hook  'my-web-mode-hook)
-
-;; Adding emmet mode for completion
-(use-package emmet-mode
-  :ensure t)
-(add-hook 'web-mode-hook 'emmet-mode)
-(setq emmet-self-closing-tag-style " /")
-
-;; Adding sudo edit for editing in sudo
-(use-package sudo-edit
-  :ensure t)
-
-;; Adding a color theme that keeps things simple and organizes the color scheme
-;; (use-package habamax-theme
-;;   :ensure t
-;;   :config
-;;   (setq habamax-theme-variable-heading-heights t)
-;;   (load-theme 'habamax t))
-
-;; trying out another color theme that is a little more supported and has both light and dark theme
-;; though I mainly use light themes
-(use-package solarized-theme
-  :ensure t
-  :config
-  (setq solarized-distinct-fringe-background t)
-  (setq solarized-high-contrast-mode-line t)
-  (load-theme 'solarized-light t)
-  (set-face-attribute 'mode-line nil :foreground "#fdf6e3":background "#74adf5" :box nil :underline nil :overline nil)
-  (set-face-attribute 'mode-line-inactive nil :background "#eee8d5":box nil :underline nil :overline nil))
-
 ;; Adding dashboard to basically customize the startup screen
 (use-package dashboard
   :ensure t
   :config
   (dashboard-setup-startup-hook)
-  (setq dashboard-items '((recents . 10)))
+  (setq dashboard-items '((recents . 20)
+                          (bookmarks . 5)
+                          (projects . 5)))
   (setq dashboard-banner-logo-title "Welcome to Emacs")
   (setq dashboard-startup-banner 'logo)
   (setq dashboard-set-footer nil))
@@ -276,9 +283,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
+ '(custom-enabled-themes (quote (adwaita)))
  '(package-selected-packages
    (quote
-    (flyspell-correct-helm slime helm-projectile which-key use-package try switch-window sudo-edit projectile powerline magit habamax-theme emmet-mode dmenu dashboard beacon avy))))
+    (restclient flyspell-correct-helm slime helm-projectile which-key use-package try switch-window projectile powerline magit emmet-mode dmenu dashboard beacon avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
