@@ -59,6 +59,11 @@
 (setq scroll-conservatively 1000)
 ;; auto pair mode globally matches delimiters
 (electric-pair-mode 1)
+;; to be able to undo window configuration
+(winner-mode 1)
+;; change where backups are saved
+(setq backup-directory `(("." . "~/.backup-saves")))
+(setq backup-by-copying t)
 
 ;; ***** ORG MODE *****
 (org-babel-do-load-languages
