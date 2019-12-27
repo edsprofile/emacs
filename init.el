@@ -62,7 +62,7 @@
 ;; to be able to undo window configuration
 (winner-mode 1)
 ;; change where backups are saved
-(setq backup-directory-alist `(("." . "~/.backup-saves")))
+(setq backup-directory `(("." . "~/.backup-saves")))
 (setq backup-by-copying t)
 
 ;; ***** ORG MODE *****
@@ -246,6 +246,11 @@
 (projectile-global-mode)
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)
+
+(use-package flyspell-correct-helm
+  :init
+  (setq flyspell-correct-interface #'flyspell-correct-helm))
+(define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper)
 
 ;; Adding switch-window
 (use-package switch-window
