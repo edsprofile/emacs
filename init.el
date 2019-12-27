@@ -1,6 +1,6 @@
 ;; Edwin's init.el
 ;; start date: 6/08/2019
-;; last modified: 10/31/2019
+;; last modified: 12/27/2019
 ;; My personal init.el to learn more about Emacs.
 ;; --------------------------------------------------------------------------------
 ;; My approach to writing this file: any new features should be under the super key
@@ -79,7 +79,6 @@
   (kill-buffer (current-buffer)))
 ;; Setting the key to kill the buffer
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
-
 
 ;; ***** CUSTOM FUNCTIONS *****
 
