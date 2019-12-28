@@ -176,7 +176,6 @@
 (add-hook 'web-mode-hook 'emmet-mode)
 (setq emmet-self-closing-tag-style " /")
 
-
 ;; ***** PACKAGES BELOW *****
 
 ;; restclient for web development
