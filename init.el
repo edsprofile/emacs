@@ -12,6 +12,7 @@
 ;; for beginners and myself. add git support to upload files. Do something about "C-x b" change buffers which
 ;; is still horizontal and I am not sure how I want to approach a fix on this.
 ;; --------------------------------------------------------------------------------
+;; Currently using Emacs 28
 
 ;;***** BASIC SETTING CHANGES *****
 
@@ -183,6 +184,11 @@
 (setq emmet-self-closing-tag-style " /")
 
 ;; ***** PACKAGES BELOW *****
+
+;; vterm testing
+(use-package vterm
+  :ensure t
+  :load-path "~/.emacs.d/emacs-libvterm/")
 
 ;; restclient for web development
 (use-package restclient
