@@ -1,6 +1,6 @@
 ;; Edwin's init.el
 ;; start date: 6/08/2019
-;; last modified: 12/27/2019
+;; last modified: 1/04/2020
 ;; My personal init.el to learn more about Emacs.
 ;; --------------------------------------------------------------------------------
 ;; My approach to writing this file: any new features should be under the super key
@@ -64,6 +64,11 @@
 ;; change where backups are saved
 (setq backup-directory-alist `(("." . "~/.backup-saves")))
 (setq backup-by-copying t)
+
+;; ***** OTHER HOOKS *****
+(add-hook 'js-mode-hook
+          (lambda ()
+             (setq js-switch-indent-offset 4)))
 
 ;; ***** ORG MODE *****
 (org-babel-do-load-languages
@@ -160,7 +165,8 @@
   ;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
   ;; (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
   ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode)
-  ;; (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode)))
+  ;; (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
 )
 (defun my-web-mode-hook ()
   "Hook for Web mode."
