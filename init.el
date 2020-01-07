@@ -1,6 +1,6 @@
 ;; Edwin's init.el
 ;; start date: 6/08/2019
-;; last modified: 1/04/2020
+;; last modified: 1/07/2020
 ;; My personal init.el to learn more about Emacs.
 ;; --------------------------------------------------------------------------------
 ;; My approach to writing this file: any new features should be under the super key
@@ -128,10 +128,14 @@
 
 ;; ***** SPELLING HOOKS and SPELLING STUFF*****
 
-(defun turn-on-flyspell()
+(defun turn-on-flyspell ()
   (flyspell-mode 1))
 
+(defun turn-off-flyspell ()
+  (flyspell-mode 0))
+
 (add-hook 'text-mode-hook 'turn-on-flyspell)
+(add-hook 'sgml-mode-hook 'turn-off-flyspell)
 
 (use-package langtool
   :ensure t)
@@ -180,15 +184,28 @@
 ;; Adding emmet mode for completion
 (use-package emmet-mode
   :ensure t)
+
+(add-hook 'sgml-mode-hook 'emmet-mode)
+(add-hook 'css-mode-hook 'emmet-mode)
 (add-hook 'web-mode-hook 'emmet-mode)
 (setq emmet-self-closing-tag-style " /")
+
+;; impatient mode
+(use-package impatient-mode
+  :ensure t
+  :config
+  (defun my-impatient-mode-hook ()
+    (browse-url (concat "http://localhost:8080/imp/live/" (buffer-name)))))
+
+(add-hook 'impatient-mode-hook 'my-impatient-mode-hook)
 
 ;; ***** PACKAGES BELOW *****
 
 ;; vterm testing
 (use-package vterm
   :ensure t
-  :load-path "~/.emacs.d/emacs-libvterm/")
+  :load-path "~/.emacs.d/emacs-libvterm/"
+  :hook (toggle-trucate-lines))
 
 ;; restclient for web development
 (use-package restclient
@@ -294,10 +311,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (adwaita)))
+ '(custom-enabled-themes '(adwaita))
  '(package-selected-packages
-   (quote
-    (which-key web-mode use-package try switch-window sudo-edit restclient magit langtool helm-swoop helm-slime helm-projectile emmet-mode dashboard beacon avy))))
+   '(which-key web-mode use-package try switch-window sudo-edit restclient magit langtool helm-swoop helm-slime helm-projectile emmet-mode dashboard beacon avy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
