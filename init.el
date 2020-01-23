@@ -65,6 +65,12 @@
 ;; change where backups are saved
 (setq backup-directory-alist `(("." . "~/.backup-saves")))
 (setq backup-by-copying t)
+;; being able to scroll the screen better
+;; got from http://pragmaticemacs.com/emacs/scrolling-and-moving-by-line/
+;;scroll window up/down by one line
+(global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
+(global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
+
 
 ;; ***** OTHER HOOKS *****
 (add-hook 'js-mode-hook
@@ -87,6 +93,41 @@
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 
 ;; ***** CUSTOM FUNCTIONS *****
+
+;; move lines up or down got this from
+;; https://krsoninikhil.github.io/2018/12/15/easy-moving-from-vscode-to-emacs/
+
+(defun move-line-down ()
+   (interactive)
+   (let ((col (current-column)))
+     (save-excursion
+       (forward-line)
+       (transpose-lines 1))
+     (forward-line)
+     (move-to-column col)))
+ 
+ (defun move-line-up ()
+   (interactive)
+   (let ((col (current-column)))
+     (save-excursion
+       (forward-line)
+       (transpose-lines -1))
+     (forward-line -1)
+     (move-to-column col)))
+
+(defun duplicate-line ()
+  (interactive)
+  (let ((col (current-column)))
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (newline)
+    (yank)
+    (move-to-column col)))
+
+(global-set-key (kbd "C-M-p") 'move-line-up)
+(global-set-key (kbd "C-M-n") 'move-line-down)
+(global-set-key (kbd "C-M-d") 'duplicate-line)
 
 ;; When opening a new window the cursor will be active in that new window
 ;; these are custom function for following the cursor.
@@ -146,6 +187,8 @@
                                 "EN_QUOTES"))
 
 ;; ***** WEB DEVELOPMENT *****
+;; toggle truncate lines in html mode
+(add-hook 'sgml-mode-hook 'toggle-truncate-lines)
 
 ;; for html validation
 ;; Function to run Tidy HTML parser on buffer
@@ -201,7 +244,7 @@
 
 ;; ***** PACKAGES BELOW *****
 
-;; vterm testing
+;; vterm
 (use-package vterm
   :ensure t
   :load-path "~/.emacs.d/emacs-libvterm/"
@@ -313,7 +356,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(adwaita))
  '(package-selected-packages
-   '(which-key web-mode use-package try switch-window sudo-edit restclient magit langtool helm-swoop helm-slime helm-projectile emmet-mode dashboard beacon avy)))
+   '(smooth-scrolling which-key web-mode use-package try switch-window sudo-edit restclient magit langtool helm-swoop helm-slime helm-projectile emmet-mode dashboard beacon avy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
