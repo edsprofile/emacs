@@ -16,6 +16,8 @@
 
 ;;***** BASIC SETTING CHANGES *****
 
+;; Show trailing whitespace
+(setq-default show-trailing-whitespace t)
 ;; Continuous PDF
 (setq doc-view-continuous t)
 ;; Show fringes
@@ -73,9 +75,11 @@
 
 
 ;; ***** OTHER HOOKS *****
+
 (add-hook 'js-mode-hook
           (lambda ()
-             (setq js-switch-indent-offset 4)))
+            (setq js-switch-indent-offset 4)
+            (toggle-truncate-lines)))
 
 ;; ***** ORG MODE *****
 (org-babel-do-load-languages
@@ -97,23 +101,25 @@
 ;; move lines up or down got this from
 ;; https://krsoninikhil.github.io/2018/12/15/easy-moving-from-vscode-to-emacs/
 
-(defun move-line-down ()
-   (interactive)
-   (let ((col (current-column)))
-     (save-excursion
-       (forward-line)
-       (transpose-lines 1))
-     (forward-line)
-     (move-to-column col)))
- 
- (defun move-line-up ()
-   (interactive)
-   (let ((col (current-column)))
-     (save-excursion
-       (forward-line)
-       (transpose-lines -1))
-     (forward-line -1)
-     (move-to-column col)))
+;; (defun move-line-down ()
+;;    (interactive)
+;;    (let ((col (current-column)))
+;;      (save-excursion
+;;        (forward-line)
+;;        (transpose-lines 1))
+;;      (forward-line)
+;;      (move-to-column col)))
+;; (global-set-key (kbd "C-M-n") 'move-line-down)
+
+;; (defun move-line-up ()
+;;   (interactive)
+;;   (let ((col (current-column)))
+;;     (save-excursion
+;;       (forward-line)
+;;       (transpose-lines -1))
+;;     (forward-line -2)
+;;     (move-to-column col)))
+;; (global-set-key (kbd "C-M-p") 'move-line-up)
 
 (defun duplicate-line ()
   (interactive)
@@ -124,9 +130,6 @@
     (newline)
     (yank)
     (move-to-column col)))
-
-(global-set-key (kbd "C-M-p") 'move-line-up)
-(global-set-key (kbd "C-M-n") 'move-line-down)
 (global-set-key (kbd "C-M-d") 'duplicate-line)
 
 ;; When opening a new window the cursor will be active in that new window
@@ -226,12 +229,19 @@
 
 ;; Adding emmet mode for completion
 (use-package emmet-mode
-  :ensure t)
+  :ensure t
+  :bind*
+  (("C-j" . emmet-expand-line)
+   ("C-(" . emmet-prev-edit-point)
+   ("C-)" . emmet-next-edit-point))
+  :hook
+  ((sgml-mode . emmet-mode)
+   (css-mode . emmet-mode)
+   (web-mode . emmet-mode))
+  :init
+  (setq emmet-move-cursor-between-quotes t)
+  (setq emmet-self-closing-tag-style " /"))
 
-(add-hook 'sgml-mode-hook 'emmet-mode)
-(add-hook 'css-mode-hook 'emmet-mode)
-(add-hook 'web-mode-hook 'emmet-mode)
-(setq emmet-self-closing-tag-style " /")
 
 ;; impatient mode
 (use-package impatient-mode
@@ -243,6 +253,13 @@
 (add-hook 'impatient-mode-hook 'my-impatient-mode-hook)
 
 ;; ***** PACKAGES BELOW *****
+
+;; move text
+(use-package move-text
+  :ensure t
+  :bind
+  (("C-M-p" . move-text-up)
+   ("C-M-n" . move-text-down)))
 
 ;; vterm
 (use-package vterm
@@ -294,13 +311,17 @@
   :ensure t
   :config
   (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "C-c f f") 'helm-find-files)
+  (global-set-key (kbd "C-c h b") 'helm-buffers-list)
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-s") 'helm-occur)
-  (setq helm-autoresize-max-height 0
-	helm-autoresize-min-height 40
-	helm-split-window-in-side-p t))
+  (global-set-key (kbd "C-c h f") 'helm-find)
+  (global-set-key (kbd "C-c h g") 'helm-google-suggest)
+  (setq helm-autoresize-max-height 0)
+  (setq helm-autoresize-min-height 40)
+  (setq helm-split-window-in-side-p t))
+
 (helm-mode 1)
 (helm-autoresize-mode 1)
 
@@ -310,9 +331,18 @@
       (push '(c++-mode . semantic-format-tag-summarize) helm-semantic-display-style))
 
 (use-package projectile
-  :ensure t)
+  :ensure t
+  :config
+  (global-set-key (kbd "C-c p h") 'helm-projectile)
+  (global-set-key (kbd "C-c p f") 'helm-projectile-find-file)
+  (global-set-key (kbd "C-c p b") 'helm-projectile-switch-to-buffer)
+  (global-set-key (kbd "C-c p p") 'helm-projectile-switch-project)
+  (global-set-key (kbd "C-c p g") 'helm-projectile-grep)
+  (setq projectile-switch-project-action 'helm-projectile-find-file))
+
 (use-package helm-projectile
   :ensure t)
+
 (projectile-global-mode)
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)

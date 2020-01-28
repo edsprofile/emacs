@@ -139,23 +139,5 @@
 
 (define-abbrev-table 'vc-git-region-history-mode-abbrev-table '())
 
-(define-abbrev-table 'web-mode-abbrev-table
-  '(
-    ("ht"
-"<!DOCTYPE html>
-<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\">
-
-  <head>
-    <meta charset=\"UTF-8\" />
-    <title>title</title>
-    <link href=\"\" rel=\"stylesheet\" type=\"text/css\" />
-  </head>
-
-  <body>
-  </body>
-</html>" nil 0)
-    ("script" "<script type=\"\" src=\"\"></script>" nil 0)
-   ))
-
 (define-abbrev-table 'xref--xref-buffer-mode-abbrev-table '())
 
