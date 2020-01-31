@@ -21,7 +21,7 @@
 ;; Continuous PDF
 (setq doc-view-continuous t)
 ;; Show fringes
-(setq visual-line-fringe-indicators t)
+(setq visual-line-fringe-indicators nil)
 ;; Remove the start screen and basic Emacs settings
 (setq inhibit-startup-message t)
 ;; Instead of an annoying sound a visual action is better I feel
@@ -38,7 +38,7 @@
 ;; display time standard AM/PM
 (display-time-mode 1)
 ;;set line to always be on the screen so words sick together
-(global-visual-line-mode -1)
+(setq-default global-visual-line-mode t)
 (show-paren-mode 1)
 (setq show-paren-style 'mixed)
 ;; set the abbrev-file-name
@@ -72,14 +72,16 @@
 ;;scroll window up/down by one line
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
 (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
+;; Adding truncating lines
+(setq-default truncate-lines t)
+
 
 
 ;; ***** OTHER HOOKS *****
 
 (add-hook 'js-mode-hook
           (lambda ()
-            (setq js-switch-indent-offset 4)
-            (toggle-truncate-lines)))
+            (setq js-switch-indent-offset 4)))
 
 ;; ***** ORG MODE *****
 (org-babel-do-load-languages
@@ -190,8 +192,6 @@
                                 "EN_QUOTES"))
 
 ;; ***** WEB DEVELOPMENT *****
-;; toggle truncate lines in html mode
-(add-hook 'sgml-mode-hook 'toggle-truncate-lines)
 
 ;; for html validation
 ;; Function to run Tidy HTML parser on buffer
@@ -223,7 +223,6 @@
   "Hook for Web mode."
   (setq web-mode-enable-auto-quoting nil)
   (setq web-mode-enable-css-colorization t)
-  (setq truncate-lines t)
   (setq web-mode-enable-auto-indention nil))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
 
@@ -264,8 +263,7 @@
 ;; vterm
 (use-package vterm
   :ensure t
-  :load-path "~/.emacs.d/emacs-libvterm/"
-  :hook (toggle-trucate-lines))
+  :load-path "~/.emacs.d/emacs-libvterm/")
 
 ;; restclient for web development
 (use-package restclient
