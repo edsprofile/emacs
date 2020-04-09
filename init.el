@@ -1,6 +1,6 @@
 ;; Edwin's init.el
 ;; start date: 6/08/2019
-;; last modified: 1/07/2020
+;; last modified: 2/29/2020
 ;; My personal init.el to learn more about Emacs.
 ;; --------------------------------------------------------------------------------
 ;; My approach to writing this file: any new features should be under the super key
@@ -15,13 +15,6 @@
 ;; Currently using Emacs 28
 
 ;;***** BASIC SETTING CHANGES *****
-
-;; Show trailing whitespace
-(setq-default show-trailing-whitespace t)
-;; Continuous PDF
-(setq doc-view-continuous t)
-;; Show fringes
-(setq visual-line-fringe-indicators nil)
 ;; Remove the start screen and basic Emacs settings
 (setq inhibit-startup-message t)
 ;; Instead of an annoying sound a visual action is better I feel
@@ -29,16 +22,16 @@
 ;; Remove tool bar less clutter
 (tool-bar-mode -1)
 ;; Remove the scroll bar
-(scroll-bar-mode -1)
+(scroll-bar-mode 1)
 ;; Add line number and column numbers to be displayed on Emacs bar
 (line-number-mode 1)
 (column-number-mode 1)
 ;; Add line numbers to be displayed on the left side
-(global-display-line-numbers-mode 1)
+;; (global-display-line-numbers-mode 1)
 ;; display time standard AM/PM
 (display-time-mode 1)
 ;;set line to always be on the screen so words sick together
-(setq-default global-visual-line-mode t)
+(global-visual-line-mode 1)
 (show-paren-mode 1)
 (setq show-paren-style 'mixed)
 ;; set the abbrev-file-name
@@ -72,18 +65,26 @@
 ;;scroll window up/down by one line
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
 (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
-;; Adding truncating lines
-(setq-default truncate-lines t)
-
-
 
 ;; ***** OTHER HOOKS *****
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (add-hook 'js-mode-hook
           (lambda ()
             (setq js-switch-indent-offset 4)))
 
 ;; ***** ORG MODE *****
+;; Org mode changes
+(setq-default org-display-custom-times t)
+(setq org-time-stamp-custom-formats '("<%a %b %d %Y>" . "<%D %a %b %d %Y %I:%M%p>"))
+;; Other org settings
+(setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
+(setq org-confirm-babel-evaluate nil)
+(setq org-export-with-smart-quotes t)
+(setq org-src-window-setup 'current-window)
+(add-hook 'org-mode-hook 'org-indent-mode)
+
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((lisp . t)))
@@ -160,6 +161,7 @@
 
 ;; Setting up MELPA
 (require 'package)
+(require 'json)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/"))
@@ -207,7 +209,7 @@
   (other-window 1)
   (delete-file "/tmp/tidy-errs")
   (message "buffer tidy'ed"))
-(global-set-key (kbd "C-x t") 'tidy-buffer)
+(global-set-key (kbd "C-x t b") 'tidy-buffer)
 
 ;;Adding web mode for web development
 (use-package web-mode
@@ -217,8 +219,8 @@
   ;; (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
   ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode)
   ;; (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
-)
+  (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode)))
+
 (defun my-web-mode-hook ()
   "Hook for Web mode."
   (setq web-mode-enable-auto-quoting nil)
@@ -230,7 +232,7 @@
 (use-package emmet-mode
   :ensure t
   :bind*
-  (("C-j" . emmet-expand-line)
+  (("C-RET" . emmet-expand-line)
    ("C-(" . emmet-prev-edit-point)
    ("C-)" . emmet-next-edit-point))
   :hook
@@ -242,16 +244,134 @@
   (setq emmet-self-closing-tag-style " /"))
 
 
-;; impatient mode
-(use-package impatient-mode
+;; ***** PACKAGES BELOW *****
+(use-package writeroom-mode
   :ensure t
   :config
-  (defun my-impatient-mode-hook ()
-    (browse-url (concat "http://localhost:8080/imp/live/" (buffer-name)))))
+  (setq writeroom-width 1)
+  (setq writeroom-mode-line-toggle-position 'mode-line-format))
 
-(add-hook 'impatient-mode-hook 'my-impatient-mode-hook)
+(use-package auctex
+  :defer t
+  :ensure t
+  :config
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq reftex-plug-into-AUCTeX t)
+  (setq TeX-PDF-mode t))
 
-;; ***** PACKAGES BELOW *****
+;; Trying treemacs
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+          treemacs-deferred-git-apply-delay      0.5
+          treemacs-directory-name-transformer    #'identity
+          treemacs-display-in-side-window        t
+          treemacs-eldoc-display                 t
+          treemacs-file-event-delay              5000
+          treemacs-file-extension-regex          treemacs-last-period-regex-value
+          treemacs-file-follow-delay             0.2
+          treemacs-file-name-transformer         #'identity
+          treemacs-follow-after-init             t
+          treemacs-git-command-pipe              ""
+          treemacs-goto-tag-strategy             'refetch-index
+          treemacs-indentation                   2
+          treemacs-indentation-string            " "
+          treemacs-is-never-other-window         nil
+          treemacs-max-git-entries               5000
+          treemacs-missing-project-action        'ask
+          treemacs-no-png-images                 nil
+          treemacs-no-delete-other-windows       t
+          treemacs-project-follow-cleanup        nil
+          treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                      'left
+          treemacs-recenter-distance             0.1
+          treemacs-recenter-after-file-follow    nil
+          treemacs-recenter-after-tag-follow     nil
+          treemacs-recenter-after-project-jump   'always
+          treemacs-recenter-after-project-expand 'on-distance
+          treemacs-show-cursor                   nil
+          treemacs-show-hidden-files             t
+          treemacs-silent-filewatch              nil
+          treemacs-silent-refresh                nil
+          treemacs-sorting                       'alphabetic-asc
+          treemacs-space-between-root-nodes      t
+          treemacs-tag-follow-cleanup            t
+          treemacs-tag-follow-delay              1.5
+          treemacs-user-mode-line-format         nil
+          treemacs-width                         35)
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;;(treemacs-resize-icons 44)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode t)
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null treemacs-python-executable)))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple))))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t d"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+(use-package treemacs-projectile
+  :after treemacs projectile
+  :ensure t)
+
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
+
+;; Python config
+(use-package company-quickhelp
+  :ensure t
+  :config
+  (company-quickhelp-mode 1))
+
+(use-package py-autopep8
+  :ensure t)
+
+(use-package elpy
+  :ensure t
+  :config
+  (setq elpy-eldoc-show-current-function nil))
+(elpy-enable)
+(define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand)
+(define-key global-map (kbd "C-c o") 'iedit-mode)
+
+;; (use-package flycheck
+;;   :ensure t)
+;; (when (load "flycheck" t t)
+;;   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+;;   (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+(use-package ein
+  :ensure t)
+
+;; learning org mode
+(use-package org-bullets
+  :ensure t
+  :init
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 ;; move text
 (use-package move-text
@@ -296,13 +416,13 @@
   (setq dashboard-set-footer nil))
 
 ;; Adding avy this allows for jumping around to characters
-;; only on the current screen just press "M-S"
+;; only on the current screen just press "M-s"
 ;; then enter the letter you would like to go to.
 ;; recent change just M-s easier to press
 (use-package avy
   :ensure t
   :bind
-  ("M-s" . avy-goto-char))
+  ("M-s" . avy-goto-char-2))
 
 ;; Helm awesome package that helps searching for many things
 (use-package helm
@@ -313,6 +433,7 @@
   (global-set-key (kbd "C-c f f") 'helm-find-files)
   (global-set-key (kbd "C-c h b") 'helm-buffers-list)
   (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-x C-b") 'helm-mini)
   (global-set-key (kbd "C-s") 'helm-occur)
   (global-set-key (kbd "C-c h f") 'helm-find)
   (global-set-key (kbd "C-c h g") 'helm-google-suggest)
@@ -383,8 +504,17 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(adwaita))
+ '(ein:output-area-inlined-images t)
+ '(eldoc-echo-area-use-multiline-p 'truncate-sym-name-if-fit)
+ '(elpy-modules
+   '(elpy-module-company elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))
+ '(elpy-rpc-python-command "python3")
+ '(elpy-rpc-virtualenv-path 'default)
+ '(global-company-mode t)
+ '(global-eldoc-mode nil)
  '(package-selected-packages
-   '(smooth-scrolling which-key web-mode use-package try switch-window sudo-edit restclient magit langtool helm-swoop helm-slime helm-projectile emmet-mode dashboard beacon avy)))
+   '(which-key web-mode use-package try switch-window sudo-edit smooth-scrolling restclient py-autopep8 org-bullets move-text magit langtool impatient-mode helm-swoop helm-slime helm-projectile ess emmet-mode dashboard beacon))
+ '(python-shell-interpreter "python3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
